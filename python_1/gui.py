@@ -74,7 +74,7 @@ class Application(Tkinter.Frame):
 		param_label_size.grid(row = 1, column = 0)
 
 		self.param_entry_size = Tkinter.Entry(param_frame)
-		self.param_entry_size.insert(Tkinter.END, '11')
+		self.param_entry_size.insert(Tkinter.END, '100')
 		self.param_entry_size.focus()
 		self.param_entry_size.grid(row = 2, column = 0)
 

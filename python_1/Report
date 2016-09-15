@@ -11,8 +11,57 @@
 	Source code is reasonably commented with data invariants.
 	Variables are named with obvious purpose.
 3.
+	NumPy:
+		Input matrix:
+			array([[6, 3, 2],
+			       [7, 2, 3],
+			       [5, 5, 1]])
+
+		Iterations:
+			[ 0.91666667  1.          0.91666667]
+			[ 0.92537313  1.          0.94029851]
+			[ 0.92338177  1.          0.93527081]
+			[ 0.92380729  1.          0.93634978]
+			[ 0.92371586  1.          0.93611801]
+
+		Dominant Eigenvector: array([ 0.92373549,  1.        ,  0.93616778])
+
+	Non-Numpy:
+		Input matrix:
+			[[6.0, 3.0, 2.0], [7.0, 2.0, 3.0], [5.0, 5.0, 1.0]]
+
+		Iterations:
+			[[0.9166666666666666], [1.0], [0.9166666666666666]]
+			[[0.9253731343283583], [1.0], [0.9402985074626865]]
+			[[0.9233817701453103], [1.0], [0.9352708058124174]]
+			[[0.9238072910561481], [1.0], [0.9363497831438283]]
+			[[0.923715862900627], [1.0], [0.9361180127452102]]
+			[[0.9237354946681234], [1.0], [0.9361677800675877]]
+
+		Dominant Eigenvector: [[0.9237354946681234], [1.0], [0.9361677800675877]]
 
 4.
+	In my implementation I have 10.000 iterations before the program gives up.
+	Running my program on this input will result in this:
+
+	...
+	[ 1.  -0.5]
+	[ 1.  1.]
+	[ 1.  -0.5]
+	[ 1.  1.]
+	...
+
+	When iterations are exhausted the method will return the None object. For both NumPy and Non-Numpy.
 
 5.
+	For N = 300
+	NumPy finished running in 0.000557899475098
+	Non-NumPy finished running in 0.0953509807587
 
+	For N = 1000
+	NumPy finished running in 0.00431799888611
+	Non-NumPy finished running in 0.565118074417
+
+	For N = 5000
+	NumPy finished running in 0.0911710262299
+	Non-NumPy finished running in 15.785130024
