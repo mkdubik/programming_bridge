@@ -1,0 +1,18 @@
+1.
+	Program is structured into 3 parts:
+		a) gui.py - All gui related functions and builds are implemented here
+		b) power_method.py - Everything related only to the power iteration calculation
+			is implemented in here
+		c) dialog.py - Helper class to present results in a better fashion
+
+		gui.py is the main entry point to the application which fires the GUI but it is possible to run power_method.py without gui to and have command line output
+
+2.
+	Source code is reasonably commented with data invariants.
+	Variables are named with obvious purpose.
+3.
+
+4.
+
+5.
+

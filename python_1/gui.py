@@ -1,16 +1,21 @@
+import sys
 import Tkinter
 import tkMessageBox
-import sys
 
+from dialog import Dialog, center_window
 import power_method
 
-from pdb import set_trace
 
 class Application(Tkinter.Frame):
 
+	'''
+		Data invariant: This class is the GUI part
+			of the power method calculation and is thus
+			the 'main' entry point of the application
+	'''
+
 	def __init__(self, master = None):
 		Tkinter.Frame.__init__(self, master)
-		master.bind("<Escape>", sys.exit)
 		master.title('Caluclate dominant eigenvector')
 		self.pack(fill = Tkinter.BOTH, expand = True)
 		self.createWidgets()
@@ -22,21 +27,45 @@ class Application(Tkinter.Frame):
 	USE_NUMPY = None
 
 	def exit(self):
+		# Exit the program. Use escape or hit the Exit button
 		sys.exit(1)
 
-	def compute(self):
-		_, xk, iterations, time = power_method.calculate(int(self.param_entry_size.get()),
-										float(self.param_entry_eps.get()),
-										'NumPy' if self.USE_NUMPY.get() == 1 else 'Normal')
-		if xk is None:
-			tkMessageBox.showinfo('Complete', 'The matrix {matrix} did not converge within {iterations} iterations with time {time}'.format(
-				matrix = int(self.param_entry_size.get()), result = xk, iterations = iterations, time = time))
-		else:
-			tkMessageBox.showinfo('Complete', 'The matrix {matrix} gave the result {result} with {iterations} iterations with time {time}'.format(
-				matrix = int(self.param_entry_size.get()), result = xk, iterations = iterations, time = time))
+	def validate(self):
+		# Fetch parameters from GUI elements and validate them
+
+		size = self.param_entry_size.get()
+		eps = self.param_entry_eps.get()
+
+		try:
+			if int(size) < 1:
+				tkMessageBox.showinfo('Bad Input!',
+					'Input size must be an integer > 0!')
+				return
+		except ValueError:
+			tkMessageBox.showinfo('Bad Input!', 'Input size must be an integer > 0')
+			return
+
+		try:
+			float(eps)
+		except ValueError:
+			tkMessageBox.showinfo('Bad Input!', 'Eps must be a float value!\nAccepted formats are: 1.0e-6, 0.005')
+			return
+
+		self.compute(int(size), float(eps),
+			True if self.USE_NUMPY.get() == 1 else False)
+
+
+	def compute(self, size, eps, use_numpy):
+		# Run the power iteration and display results on complete run
+		Dialog(self, use_numpy, *power_method.calculate(size, eps, use_numpy))
 
 	def createWidgets(self):
 		# Create and arrange the gui elements
+		# From top to bottom, the variables explain what
+		# 	element of the GUI they control
+		# Some elements must be decleared global to be accessible
+		#	by the compute function. These start with 'self.'
+
 		param_frame = Tkinter.LabelFrame(self, text = 'Parameters')
 		param_frame.grid(row = 0, column = 0)
 
@@ -45,7 +74,7 @@ class Application(Tkinter.Frame):
 		param_label_size.grid(row = 1, column = 0)
 
 		self.param_entry_size = Tkinter.Entry(param_frame)
-		self.param_entry_size.insert(Tkinter.END, '100')
+		self.param_entry_size.insert(Tkinter.END, '11')
 		self.param_entry_size.focus()
 		self.param_entry_size.grid(row = 2, column = 0)
 
@@ -56,13 +85,11 @@ class Application(Tkinter.Frame):
 		self.param_entry_eps.insert(Tkinter.END, '1.0e-6')
 		self.param_entry_eps.grid(row = 4, column = 0)
 
-
 		self.computation_status = Tkinter.Label(self, text = '')
 		self.computation_status.grid(row = 5, column = 0)
 
-
 		self.USE_NUMPY = Tkinter.IntVar()
-		self.USE_NUMPY.set(1) # Set default state as NumPy
+		self.USE_NUMPY.set(2) # Set default state as using NumPy
 
 		option_frame = Tkinter.LabelFrame(self, text = 'Method:')
 		option_frame.grid(row = 0, column = 1, padx = 20)
@@ -88,7 +115,7 @@ class Application(Tkinter.Frame):
 
 		self.button_compute = Tkinter.Button(self,
 			text = 'Compute',
-			command = self.compute)
+			command = self.validate)
 		self.button_compute.grid(row = 5, column = 1)
 
 		button_exit = Tkinter.Button(self,
@@ -96,19 +123,10 @@ class Application(Tkinter.Frame):
 			command = self.exit)
 		button_exit.grid(row = 6, column = 1)
 
+
+# Create window and center it in the middle for convenience
 window = Tkinter.Tk()
-
-def center_window(width=300, height=200):
-	# get screen width and height
-	screen_width = window.winfo_screenwidth()
-	screen_height = window.winfo_screenheight()
-
-	# calculate position x and y coordinates
-	x = (screen_width/2) - (width/2) + 600
-	y = (screen_height/2) - (height/2)
-	window.geometry('%dx%d+%d+%d' % (width, height, x, y))
-
-center_window()
+center_window(window)
 
 app = Application(master = window)
 app.mainloop()
