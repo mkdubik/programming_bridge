@@ -55,8 +55,7 @@ double *solve(double *x, double *y, int n) {
 	double D = (double)n * sumpow(x, n) - pow(sumone(x, n), 2);
 	double _a = a(x, y, n, D);
 	double _b = b(x, y, n, D);
-	double *stuff = (double[2]) {_a, _b};
-	return stuff;
+	return (double[2]) {_a, _b};
 }
 
 int main() {
@@ -88,29 +87,26 @@ k and L
 			free(y);
 		}
 	} else {
-
 		int n = 5;
 		double *x;
 		double *y;
 		x = (double[5]){1.1, 2.2, 2.9, 4.1, 5.0};
 		y = (double[5]){1.1, 2.2, 3.1, 4.2, 5.0};
-		double *result = solve(x, y, n);
-		printf("Result: %lf %lf\n", result[0], result[1]);
 
-		for (int j = 0; j < 5; j++) {
-			printf("x: %lf F: %lf\n k: %lf", x[j], y[j], result[0]);
-		}
+		double *result = solve(x, y, n);
+
+		double a = result[0];
+		double b = result[1];
+
+		double k = a;
+		double L = -b / a;
+
+		printf("%lf %lf %lf\n", a, b, L);
+
+		printf("The corresponding line is: %lfx + %lf\n", k, b);
+		printf("This means that k = %lf and L = %lf\n", k, L);
 
 	}
 	return 0;
 
 }
-
-//The corresponding line is: 1.01x + 0.04
-
-
-
-
-
-
-//This means that k = 1.01 and L = -0.0364
