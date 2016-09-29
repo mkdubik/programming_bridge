@@ -46,20 +46,51 @@ pair predcorr(double x, double y, double z, double h) {
 	return next;
 }
 
+void analysis(double ***table, int total_runs, int total_pred, double eps) {
+	int i, j, k;
+
+	/* Simple analysis function:
+		if code enters a region that is under the eps this index is marked
+		if at one point the eps get higher the switch is set to being outside the region.
+		Once the region is back under eps the switch is set to being back in.
+		This goes on until it eventually will not exit anymore. Total time is the
+		t step summed.  */
+
+	int in_region = 0;
+	for (i = 0; i < total_runs; i++) {
+		int below_eps_index_permanent = -1;
+		for (j = 0; j < total_pred; j++) {
+			if (fabs(table[i][j][0]) < eps) {
+				if (in_region == 0) {
+					below_eps_index_permanent = j;
+					in_region = 1;
+				}
+			} else {
+				in_region = 0;
+			}
+		}
+
+		if (below_eps_index_permanent == -1) {
+			printf("abs(x) never drops below eps for my = %lf\n", table[i][0][2]);
+		} else {
+			double sum = 0.0;
+			for (k = 0; k < below_eps_index_permanent; k++) {
+				sum += 0.005;
+			}
+			printf("The time when abs(x) permanently drops below %lf for my = %.2lf is %lf\n", eps, table[i][0][2], sum);
+		}
+	}
+}
+
 int main() {
-/*
-define h and the limit epsilon
-iterate over friction values
-create two arrays x and y
-iterate over the pred-corr function to fill
-x and y with values
-analyze the result according to the problem
-*/
+	double eps;
+	printf("Input epsilon: ");
+	scanf("%lf", &eps);
+
 	double t = 0.0;
 	double y = 0.0;
 	double h = 0.005;
 	double x = 0.2;
-	double eps = 0.0;
 
 	printf("Start values:\n");
 	printf("t = %lf\n", t);
@@ -69,32 +100,57 @@ analyze the result according to the problem
 	printf("my = %lf\n", my);
 	printf("epsilon = %lf\n", eps);
 
-	double **table;
-	table = (double *) malloc (sizeof(double) * ((int)(3.0 / h) * 3));
+	int total_runs = (int)(1 / my) - 1;
+	int total_pred = (int)(3.0 / h);
 
-	pair r;
-	r.y = x;
-	r.z = y;
 
-	for (t = 0; t < 3.0; t += h){
-		pair p = predcorr(t, r.y, r.z, h);
-		r.y = p.y;
-		r.z = p.z;
-		printf("%lf %lf %lf\n", t, r.y, r.z);
+	/* A 3D array,
+		my (0.1 to 0.9) *
+		number of iteration (3 / 0.005) *
+		3 (x, y, and the my value) */
+	double ***table;
+	table = (double ***) malloc (total_runs * sizeof(double**));
+
+	int i = 0;
+	int j = 0;
+	while (my <= 0.9) {
+		printf("t, x and y for my = %.1lf\n", my);
+		table[i] = (double **) malloc (total_pred * sizeof(double *));
+
+		pair r;
+		r.y = x;
+		r.z = y;
+
+		while (t < 3.0) {
+			table[i][j] = (double *) malloc (3 * sizeof(double));
+
+			pair p = predcorr(t, r.y, r.z, h);
+			r.y = p.y;
+			r.z = p.z;
+			table[i][j][0] = p.y;
+			table[i][j][1] = p.z;
+			table[i][j][2] = my;
+
+			printf("%.3lf %.3lf %.3lf\n", t, r.y, r.z);
+			j++;
+			t += h;
+		}
+		j = 0;
+		t = 0.0;
+
+
+		i++;
+		my += 0.1;
 	}
 
-	/*
-	for (float muj = 0; muj < 1; muj += my) {
-		for (float t = 0; t < 3.0; t += 0.2){
-			pair p = predcorr(x, y, z, t);
+	analysis(table, total_runs, total_pred, eps);
+
+	/* Free data the data collection since we won't use it anymore */
+	for (i = 0; i < total_runs; i++) {
+		for (j = 0; j < total_pred; j++) {
+			free(table[i][j]);
 		}
-	}*/
-
-
-	int i;
-	for (t = 0; t < 3.0; t += h) {
 		free(table[i]);
-		i++;
 	}
 	free(table);
 	return 0;
