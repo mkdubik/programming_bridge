@@ -2,41 +2,29 @@
 #include <math.h>
 #include <stdlib.h>
 
-static double k = 300.0;
-static double m = 5.0;
-static double g = 9.81;
+static const double k = 300.0;
+static const double m = 5.0;
+static const double g = 9.81;
 static double my = 0.1;
 
 typedef struct pair {
 	double y,z;
 } pair;
 
-int sign(double x) {
-	if (x < 0) return -1;
-	else if (x > 0) return 1;
-	else return 0;
+double sign(double x) {
+	if (x < 0.0) return -1.0;
+	else if (x > 0.0) return 1.0;
+	else return 0.0;
 }
-
-
-
-
-double dydt(double muj, double x, double y) {
-	return -k/m * x - muj * g * sign(y);
-}
-
-//yp = yi + hp(xi ; yi; zi )
-//zp = zi + hq(xi; yi; zi )
-//yi+1 = yi +1/2*h(p(xi ; yi; zi ) + p(xi+1; yp; zp))
-//zi+1 = zi +1/2*h(q(xi; yi; zi ) + q(xi+1 ; yp; zp))
 
 /* the p function */
 double p(double x, double y, double z) {
-	return y;
+	return z;
 }
 
 /* the q function */
 double q(double x, double y, double z) {
-	return dydt(x, y, z);
+	return (-k * y)/m  - my * g * sign(z);
 }
 
 /*
@@ -48,11 +36,10 @@ pair predcorr(double x, double y, double z, double h) {
 
 	double p_i = p(x, y, z);
 	double q_i = q(x, y, z);
-
 	double yp = y + h * p_i;
 	double zp = z + h * q_i;
 
-	double x_next = x;
+	double x_next = x + h;
 
 	next.y = y + 0.5 * h * (p_i + p(x_next, yp, zp));
 	next.z = z + 0.5 * h * (q_i + q(x_next, yp, zp));
@@ -68,11 +55,33 @@ iterate over the pred-corr function to fill
 x and y with values
 analyze the result according to the problem
 */
-
-	int t = 0;
+	double t = 0.0;
+	double y = 0.0;
+	double h = 0.005;
 	double x = 0.2;
-	double y = 0;
-	double z = 0;
+	double eps = 0.0;
+
+	printf("Start values:\n");
+	printf("t = %lf\n", t);
+	printf("x = %lf\n", x);
+	printf("y = %lf\n", y);
+	printf("h = %lf\n", h);
+	printf("my = %lf\n", my);
+	printf("epsilon = %lf\n", eps);
+
+	double **table;
+	table = (double *) malloc (sizeof(double) * ((int)(3.0 / h) * 3));
+
+	pair r;
+	r.y = x;
+	r.z = y;
+
+	for (t = 0; t < 3.0; t += h){
+		pair p = predcorr(t, r.y, r.z, h);
+		r.y = p.y;
+		r.z = p.z;
+		printf("%lf %lf %lf\n", t, r.y, r.z);
+	}
 
 	/*
 	for (float muj = 0; muj < 1; muj += my) {
@@ -81,12 +90,12 @@ analyze the result according to the problem
 		}
 	}*/
 
-	for (float t = 0; t < 3.0; t += 0.2){
-		pair p = predcorr(x, y, z, t);
-		printf("%lf %lf\n", p.y, p.z);
-		y = p.y;
-		z = p.z;
-	}
 
+	int i;
+	for (t = 0; t < 3.0; t += h) {
+		free(table[i]);
+		i++;
+	}
+	free(table);
 	return 0;
 }
