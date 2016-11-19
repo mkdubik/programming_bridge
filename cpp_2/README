@@ -1,0 +1,9 @@
+C++ Assignment #2
+
+Build the module by typing `make` into the bash prompt
+C++ source files are located in src folder
+Swig source files are located in swig folder
+
+All output and machine generated files are put in build folder
+
+
