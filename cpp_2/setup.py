@@ -9,6 +9,7 @@ from distutils.core import setup, Extension
 
 vector_module = Extension('_Cpppy',
                            sources=['swig/Cpppy_wrap.cxx', 'src/Vector.cpp'],
+                           swig_opts=['-c++']
                            )
 
 setup (name = 'Cpppy',

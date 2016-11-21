@@ -3,21 +3,27 @@
 %}
 
 %include "std_vector.i"
+%include <std_string.i>
 %include <Vector.h>
 
+
 %extend Vector {
-	Vector __mul__(Vector *other) {
-		// Evil pointer magic
-		return *self * *other;
+	T __getitem__(unsigned int ix) {
+		return (*($self))[ix];
 	}
+
+	void __setitem__(unsigned int ix, T t) {
+		(*($self))[ix] = t;
+	}
+
+	std::string __str__() {
+		return (*($self)).to_string();
+	}
+
 };
 
-
-%template(iArray)  std::vector < int >;
-%template(fArray)  std::vector < float >;
-%template(dArray)  std::vector < double >;
+%rename(__mul__) Vector::operator*;
 
 %template(iVector) Vector<int>;
 %template(fVector) Vector<float>;
 %template(dVector) Vector<double>;
-
