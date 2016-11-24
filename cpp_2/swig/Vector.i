@@ -8,6 +8,10 @@
 
 
 %extend Vector {
+	//Vector ones(unsigned int size) {
+	//	return (*($self)).ones(size);
+	//}
+
 	T __getitem__(unsigned int ix) {
 		return (*($self))[ix];
 	}
