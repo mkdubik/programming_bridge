@@ -1,12 +1,10 @@
-from Cpppy import iVector
-from Cpppy import iArray
-
-a, b = iArray([0, 1, 2, 3, 4]), iArray([4, 3, 2, 1, 0])
-
-ai = iVector(a)
-bi = iVector(b)
-
-k = ai * bi
-
-print k
-
+from Cpppy import dVector
+from Cpppy import dArray
+import time
+a = dVector.random(5)
+b = dVector.random(5)
+c = dVector.ones(5)
+a[0] = 1
+print a[0]
+#print b
+#print c

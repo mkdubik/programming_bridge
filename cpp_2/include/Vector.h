@@ -11,14 +11,18 @@ template <class T>
 class Vector
 {
 	public:
-		Vector<T> ();
-		Vector<T> (std::vector<T> t);
-		Vector<T> ones(unsigned int size);
+		Vector<T> (void);
+
+		static Vector<T> set_vector(std::vector<T> t);
+		static Vector<T> ones(unsigned int size);
+		static Vector<T> random(unsigned int size);
+
 
 		T operator*(const Vector<T> &c1);
 		T operator[](unsigned int x) const;
 		T& operator[](unsigned int x);
 
+		unsigned int size();
 		std::string to_string();
 
 	private:
@@ -26,22 +30,36 @@ class Vector
 };
 
 template<typename T>
-Vector<T>::Vector() {}
+Vector<T>::Vector(void) {}
 
 template<typename T>
-Vector<T>::Vector(std::vector<T> t)
+Vector<T> Vector<T>::set_vector(std::vector<T> t)
 {
-	v = t;
+	Vector<T> v;
+	v.v = t;
+	return v;
 }
 
 template<typename T>
 Vector<T> Vector<T>::ones(unsigned int size)
 {
 	Vector<T> r;
-	std::srand(std::time(0));
 	for (unsigned int i = 0; i < size; i++)
 	{
 		r.v.push_back((T)1);
+	}
+	return r;
+}
+
+template<typename T>
+Vector<T> Vector<T>::random(unsigned int size)
+{
+	std::srand(std::time(NULL));
+
+	Vector<T> r;
+	for (unsigned int i = 0; i < size; i++)
+	{
+		r.v.push_back(((T)rand() / (T)RAND_MAX));
 	}
 	return r;
 }
@@ -74,25 +92,30 @@ T& Vector<T>::operator[](unsigned int ix)
 }
 
 template<typename T>
+unsigned int Vector<T>::size()
+{
+	return v.size();
+}
+
+template<typename T>
 std::string Vector<T>::to_string()
 {
-	size_t vsz = v.size();
-	if (vsz < 1) {
-		return "";
+	unsigned int size = v.size();
+	if (size == 0)
+	{
+		return "[]";
 	}
 
 	std::stringstream ss;
-	unsigned int i = 0;
-	while (1) {
-		ss << v[i];
-
-		if (i >= vsz)
-			break;
-
-		ss << " ";
-		i++;
+	ss << "[";
+	for (unsigned int i = 0; i < size; i++)
+	{
+		ss << v[i] << ", ";
 	}
-	return ss.str();
+	ss << "]";
+	std::string str = ss.str();
+	str.erase(str.size() - 3, 2);
+	return str;
 }
 
 

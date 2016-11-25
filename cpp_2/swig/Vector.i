@@ -1,17 +1,14 @@
+%ignore Vector::operator[];
+
 %{
 #include <Vector.h>
 %}
 
-%include "std_vector.i"
+%include <std_vector.i>
 %include <std_string.i>
 %include <Vector.h>
 
-
 %extend Vector {
-	//Vector ones(unsigned int size) {
-	//	return (*($self)).ones(size);
-	//}
-
 	T __getitem__(unsigned int ix) {
 		return (*($self))[ix];
 	}
