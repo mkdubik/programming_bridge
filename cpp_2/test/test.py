@@ -1,10 +1,17 @@
-from Cpppy import dVector
-from Cpppy import dArray
-import time
-a = dVector.random(5)
-b = dVector.random(5)
-c = dVector.ones(5)
-a[0] = 1
-print a[0]
-#print b
-#print c
+import Cpppy as cp
+
+N = 10
+
+dm = cp.dMatrix.random(N, N)
+vv = cp.dVector.ones(N)
+
+vresult = dm * vv
+print vresult
+
+vresult[1] = 20.0
+print vresult[1]
+
+print dm[1]
+dm[1] = cp.dVector.set_vector(cp.dArray([10, 10, 10, 10, 10, 10, 10 ,10, 10, 10]))
+
+

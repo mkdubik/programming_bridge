@@ -1,9 +1,31 @@
-C++ Assignment #2
+This is the C++ Assignment #2 in the course Programming, Bridgin course
 
 Build the module by typing `make` into the bash prompt
-C++ source files are located in src folder
+All the C++ code is implemented in header files, using templates and STL
 Swig source files are located in swig folder
+All output and machine generated files are put in build folder.
 
-All output and machine generated files are put in build folder
+To use the files in C++ you only have to add the include folder to the compilation
+(-Iinclude) and include the relevant headers (<Matrix.h>, <Vector.h>). An example of this is located in the test folder
+
+To be able to use the C++ code in Python world you must have the cpp_2 folder in Python
+path (cpp_2 is a python module),however the name of the library is Cpppy (C++Py).
+
+NOTE: To make this work you must have PYTHONPATH set to the cpp_2 folder. Here's an example path:
+
+export PYTHONPATH=/home/mikael/cpp_2
+
+We can then use it like this:
+
+python
+>>> import Cpppy as cp
+>>> cp.dMatrix()
+>>> cp.dVector()
 
 
+The test folder has extensive examples on how to use the objects in python world.
+To run the test you invoke the Makefile then run the command ./tests/build/main
+To run the python test you run python test/test.py
+
+NOTE: To generate random vectors and matrixes using the .random() method the user is responsible for seeding the random value! In C++ world, you can just call:
+srand(time(NULL)) however in Python world you need to seed srand as well, put in C++ world. For this theres an exposed function called seed_random() in Cpppy module that must be called once. In the power method implementation this function is called for the user.

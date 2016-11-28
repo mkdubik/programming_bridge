@@ -1,9 +1,6 @@
 import sys
 import Tkinter
 
-from pdb import set_trace
-
-
 def center_window(window, width = 300, height = 200):
 	# This function has inspiration from this stack overflow answer:
 	# http://stackoverflow.com/questions/14910858/how-to-specify-where-a-tkinter-window-opens
@@ -74,11 +71,21 @@ class Dialog:
 		xk_str = 'No solution was found for input matrix'
 		if len(A) > 10:
 			if xk is not None:
-				xk_str = self.format_large_numpy_vector(xk) if use_numpy else self.format_large_matrix(xk)
+				xk_str = self.format_large_numpy_vector(xk) if use_numpy == 2 or use_numpy == 3 else self.format_large_matrix(xk)
 			return self.format_large_matrix(A), xk_str
 
 		if xk is not None:
-			xk_str = '\n'.join(str(x) for x in xk) if use_numpy else self.format_matrix(xk)
+			if use_numpy == 3:
+				xk_str = ''
+				A = eval(str(A).replace('\n', ','))
+				if len(A) == 1:
+					A = [A]
+
+				for x in xrange(len(xk)):
+					xk_str += str(xk[x]) + '\n'
+				xk_str = xk_str[:-1]
+			else:
+				xk_str = '\n'.join(str(x) for x in xk) if use_numpy == 2 else self.format_matrix(xk)
 
 		return self.format_matrix(A), xk_str
 

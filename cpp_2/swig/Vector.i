@@ -4,7 +4,6 @@
 #include <Vector.h>
 %}
 
-%include <std_vector.i>
 %include <std_string.i>
 %include <Vector.h>
 
@@ -21,9 +20,11 @@
 		return (*($self)).to_string();
 	}
 
-};
+	int __len__() {
+		return (*($self)).size();
+	}
 
-%rename(__mul__) Vector::operator*;
+};
 
 %template(iVector) Vector<int>;
 %template(fVector) Vector<float>;

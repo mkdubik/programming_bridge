@@ -51,8 +51,8 @@ class Application(Tkinter.Frame):
 			tkMessageBox.showinfo('Bad Input!', 'Eps must be a float value!\nAccepted formats are: 1.0e-6, 0.005')
 			return
 
-		self.compute(int(size), float(eps),
-			True if self.USE_NUMPY.get() == 1 else False)
+
+		self.compute(int(size), float(eps), self.USE_NUMPY.get())
 
 
 	def compute(self, size, eps, use_numpy):
@@ -74,7 +74,7 @@ class Application(Tkinter.Frame):
 		param_label_size.grid(row = 1, column = 0)
 
 		self.param_entry_size = Tkinter.Entry(param_frame)
-		self.param_entry_size.insert(Tkinter.END, '100')
+		self.param_entry_size.insert(Tkinter.END, '9')
 		self.param_entry_size.focus()
 		self.param_entry_size.grid(row = 2, column = 0)
 
@@ -113,15 +113,27 @@ class Application(Tkinter.Frame):
 			text = 'Not NumPy')
 		option_label_notnumpy.grid(row = 4, column = 1)
 
+		option_cpp = Tkinter.Radiobutton(
+			option_frame,
+			variable = self.USE_NUMPY,
+			value = 3)
+		option_cpp.grid(row = 5, column = 1)
+
+		option_label_cpp = Tkinter.Label(
+			option_frame,
+			text = 'C++')
+		option_label_cpp.grid(row = 6, column = 1)
+
+
 		self.button_compute = Tkinter.Button(self,
 			text = 'Compute',
 			command = self.validate)
-		self.button_compute.grid(row = 5, column = 1)
+		self.button_compute.grid(row = 7, column = 1)
 
 		button_exit = Tkinter.Button(self,
 			text = 'Exit',
 			command = self.exit)
-		button_exit.grid(row = 6, column = 1)
+		button_exit.grid(row = 8, column = 1)
 
 
 # Create window and center it in the middle for convenience
