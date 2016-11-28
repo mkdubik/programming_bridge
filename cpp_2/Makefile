@@ -12,3 +12,4 @@ clean:
 	rm -f Cpppy.pyc
 	rm -f _Cpppy.so
 	rm -rf build
+	rm -rf test/build
